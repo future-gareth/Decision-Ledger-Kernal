@@ -6,10 +6,10 @@ Add the `bin` directory to your PATH:
 
 ```bash
 # For current session
-export PATH=$PATH:/Volumes/FutureBox/Code/futurematic-kernal/bin
+export PATH="$PATH:$(pwd)/bin"
 
 # For permanent (add to ~/.zshrc or ~/.bashrc)
-echo 'export PATH=$PATH:/Volumes/FutureBox/Code/futurematic-kernal/bin' >> ~/.zshrc
+echo 'export PATH="$PATH:'"$(pwd)"'/bin"' >> ~/.zshrc
 source ~/.zshrc
 ```
 

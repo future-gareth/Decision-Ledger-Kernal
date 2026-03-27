@@ -32,6 +32,9 @@ func NewServer(port int, kernelService kernel.Service, queryEngine query.Engine)
 	mux.HandleFunc("/v1/healthz", handlers.Healthz)
 	mux.HandleFunc("/v1/namespaces", handlers.Namespaces)
 	mux.HandleFunc("/v1/namespace_root", handlers.NamespaceRoot)
+	mux.HandleFunc("/v1/resolve", handlers.Resolve)
+	mux.HandleFunc("/v1/proposal_sets", handlers.ProposalSetsRoot)
+	mux.HandleFunc("/v1/proposal_sets/", handlers.ProposalSetsByID)
 
 	httpServer := &http.Server{
 		Addr:         fmt.Sprintf(":%d", port),

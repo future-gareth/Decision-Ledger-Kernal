@@ -1,0 +1,3 @@
+# Allowed emails for Decision Ledger Demo (one per line).
+# Copy to allowed_emails.txt and add real addresses. Do not commit allowed_emails.txt.
+# your.email@example.com

@@ -9,7 +9,7 @@ kernel
 # Test binary
 *.test
 
-# Context directory (internal documentation, not for deployment)
+# Optional local reference for agents (numbered build packet, dot-cli notes). Not required to build or run.
 context/
 
 # Output of the go coverage tool
@@ -38,3 +38,6 @@ go.work
 
 # Logs
 *.log
+
+# Local GitHub deploy keys (never commit)
+.deploy-keys/

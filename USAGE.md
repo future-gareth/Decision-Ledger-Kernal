@@ -157,8 +157,8 @@ You can customize the server:
 # Change database URL
 DB_URL="postgres://user:pass@host:5432/dbname?sslmode=disable" make dev
 
-# Change port
-PORT=3000 make dev
+# Change HTTP port (default 8080)
+PORT=9090 make dev
 ```
 
 ## Stopping the Server

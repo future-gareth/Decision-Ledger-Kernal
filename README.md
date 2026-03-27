@@ -2,7 +2,7 @@
 
 An append-only fact engine for Nodes/Links/Materials with deterministic planning, policy enforcement, and addressable history.
 
-**Includes:** Kernel API, Dot CLI, and Web Dot UI (v0.2)
+**Includes:** Kernel HTTP API (`cmd/kernel`) and Dot CLI (`cmd/dot`).
 
 ## Overview
 
@@ -34,7 +34,6 @@ The kernel is organized into clean layers:
 - Go 1.21+
 - PostgreSQL 14+
 - Docker and Docker Compose (for local development)
-- Node.js 18+ and npm (for Web Dot UI)
 
 ### Database Setup
 
@@ -74,64 +73,6 @@ make install-dot
 ```
 
 See [cmd/dot/README.md](cmd/dot/README.md) for complete CLI documentation.
-
-## Web Dot UI
-
-The **Web Dot UI** provides a modern web-based interface for browsing Product Ledger namespaces. It runs as a Node.js/TypeScript Express server that serves the UI and provides GUI-friendly API endpoints.
-
-### Quick Start
-
-```bash
-cd web-dot
-npm install
-npm run dev
-```
-
-Then open `http://localhost:3000` in your browser.
-
-### Features
-
-- **Products Tab**: Browse product trees with expand/collapse, node signals, and details drawer
-- **Intent Tab**: View Strategic Objectives, Assurance Obligations, and Transformation Themes with connections
-- **Ledger Tab**: Inspect operation history with entry details and affected node navigation
-- **Materials Tab**: Browse materials by category with search/filter, open in Markdown viewer
-- **Details Drawer**: View node relationships (Children, Alignment, Coherence, Decisions & Evidence, Materials)
-- **Cross-tab Navigation**: Deep-link nodes between tabs
-- **Material Context Panel**: View linked nodes and other materials in Markdown viewer
-
-### Configuration
-
-The Web Dot server is configured via `web-dot/server/config.ts`:
-- Kernel URL (default: `http://localhost:8080`)
-- Namespace (default: `ProductLedger:/Kesteron`)
-- Pinned roots (FieldServe, AssetLink, SO-1, AO-1, TT-1)
-- Server port (default: `3000`)
-- **NAMESPACE** env: set to `FinLedger:/Kesteron/Treasury` or `FinLedger:/Kesteron/StablecoinReserves` to browse FinLedger (use `?root=<node_id>` for products tree; root IDs are printed when running `make seed-finledger`)
-
-### Second domain: Financial Ledger (FinLedger:*)
-
-The kernel supports a second domain overlay using the same Node / RoleAssignment / Link abstractions. FinLedger namespaces use a separate policy set (`financialledger-policyset.yaml`) and are validated only against it.
-
-1. **Migrations** (run with `make migrate`): `0002_finledger_namespaces.sql` creates namespaces `FinLedger`, `FinLedger:/Kesteron/Treasury`, `FinLedger:/Kesteron/StablecoinReserves`.
-2. **Register policy set** (after migrate, kernel need not be running): `make bootstrap-finledger` loads `financialledger-policyset.yaml` for `FinLedger:*`.
-3. **Ingest seed graphs** (kernel must be running): `make seed-finledger` ingests `kesteron-treasury-finledger-seed.yaml` and `kesteron-stablecoinreserves-finledger-seed.yaml` into the same kernel instance. Root node IDs for the UI are printed.
-4. **Browse in UI**: set `NAMESPACE=FinLedger:/Kesteron/Treasury` (or StablecoinReserves), then open products tree with `?root=<root_node_id>`.
-5. **CLI**: `dot use FinLedger:/Kesteron/Treasury` then `dot ls`, `dot show <node_id>`, etc.
-
-### Development
-
-```bash
-# Development mode (watch mode for server and client)
-npm run dev
-
-# Build TypeScript
-npm run build
-
-# Production mode
-npm start
-```
-
-The UI uses React 18 with TypeScript and ES modules, served directly without a build tool for simplicity.
 
 ## Command Line Interface (CLI)
 
@@ -308,7 +249,7 @@ Health check endpoint.
 
 ## Policy Language
 
-Policies are namespace-scoped YAML files that define rules for operations. See `context/08-default-policyset.yaml` for an example.
+Policies are namespace-scoped YAML files that define rules for operations. Register an active policy set per namespace through plan/apply (see the Dot CLI and policy types in `internal/policy`).
 
 ### Predicates
 
@@ -352,10 +293,6 @@ make build
 │   ├── query/          # Query operations
 │   ├── kernel/         # Plan/Apply orchestration
 │   └── api/            # HTTP handlers
-├── web-dot/            # Web Dot UI (Node.js/TypeScript)
-│   ├── server/         # Express server with GUI API
-│   ├── src/            # React frontend
-│   └── public/        # Static assets
 ├── migrations/         # Database migrations
 └── docker-compose.yml  # Local Postgres setup
 ```
@@ -381,7 +318,6 @@ Environment variables:
 - ✅ Phase 8: Main Application
 - ✅ Phase 9: Integration Tests (10/10 acceptance criteria covered)
 - ✅ Dot CLI: Fully implemented and tested
-- ✅ Web Dot UI v0.2: Complete web interface for Product Ledger namespaces
 
 ## Testing
 
@@ -396,13 +332,11 @@ make test
 
 1. ✅ Integration tests (Phase 9) - Complete
 2. ✅ Dot CLI - Complete
-3. ✅ Web Dot UI v0.2 - Complete
-4. Add policy set management endpoints
-5. Improve error handling and validation
-6. Add request logging middleware
-7. Performance optimization and indexing
-8. Add test isolation (separate DB per test)
-9. Web Dot UI enhancements (Markdown editor, write operations)
+3. Add policy set management endpoints
+4. Improve error handling and validation
+5. Add request logging middleware
+6. Performance optimization and indexing
+7. Add test isolation (separate DB per test)
 
 ## License
 

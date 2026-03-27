@@ -24,6 +24,12 @@ type Store interface {
 
 	// Namespaces
 	CreateNamespace(ctx context.Context, namespace domain.Namespace) error
+
+	// Proposal sets and resolutions (Decision Ledger)
+	GetProposalSet(ctx context.Context, proposalSetID string) (*domain.ProposalSet, error)
+	GetResolution(ctx context.Context, resolutionID string) (*domain.Resolution, error)
+	ListProposalSetsForNode(ctx context.Context, nodeID, namespaceID string, limit int) ([]domain.ProposalSet, error)
+	GetResolutionForProposalSet(ctx context.Context, proposalSetID string) (*domain.Resolution, error)
 }
 
 // Tx represents a database transaction
@@ -75,4 +81,8 @@ type Tx interface {
 	// Namespace listing (for UI)
 	ListNamespaceIDsWithNodes(ctx context.Context, asofSeq int64) ([]string, error)
 	GetNamespaceRoot(ctx context.Context, namespaceID string, asofSeq int64) (nodeID, title, role string, err error)
+
+	// Proposal sets and resolutions
+	StoreProposalSet(ctx context.Context, ps *domain.ProposalSet) error
+	StoreResolution(ctx context.Context, r *domain.Resolution) error
 }
